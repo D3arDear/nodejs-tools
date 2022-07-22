@@ -1,0 +1,17 @@
+{
+  "name": "mongo-backup",
+  "version": "0.0.1",
+  "description": "mongoBackup nodejs function",
+  "main": "index.ts",
+  "author": "d3arDear",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.0.0"
+  },
+  "dependencies": {
+    "@types/archiver": "^5.3.1",
+    "@types/extract-zip": "^2.0.1",
+    "archiver": "^5.3.1",
+    "extract-zip": "^2.0.1"
+  }
+}
