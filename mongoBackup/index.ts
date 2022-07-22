@@ -4,6 +4,7 @@ import { exec } from "child_process";
 import { TDBCmdOptions } from "./utils/getCmd";
 import { unzipBackup, zipBackup } from "./utils/zipBackup";
 import { mongoHandler } from "./utils/mongoHandler";
+import { getDatePath } from "./utils/dateHandler";
 
 type TConfig = {
   dateFormate: string;
@@ -19,7 +20,7 @@ const config: TConfig = {
   // 数据库restore操作的目录
   dbRestorePath: "/home/mongo/backup",
   // 数据库备份的压缩文件存储路径
-  dbBackupPath: "/tmp/backup",
+  dbBackupPath: "/home/mongoBackup/backup",
   // 前缀
   prefix: "",
   days: 7,
@@ -34,7 +35,7 @@ const config: TConfig = {
   },
 };
 
-const testPath = resolve(__dirname, "./utils/2012-3-10");
+const testPath = resolve(__dirname, "./utils/backup");
 const testOutput = resolve(__dirname, "./utils/20120319.zip");
 
 export const backupDB = async (config: TConfig) => {
@@ -47,7 +48,11 @@ export const backupDB = async (config: TConfig) => {
   });
 };
 
-unzipBackup(testOutput, testPath).catch((err) => {
-  console.error("An error occurred:", err);
-  process.exitCode = 1;
-});
+export const restoreDB = async (config: TConfig, restoreFile: string) => {
+  const { dbConfig, dbBackupPath } = config;
+  await unzipBackup(path.join(dbBackupPath, restoreFile), config.dbRestorePath).catch((err) => {
+    console.error("An error occurred:", err);
+    process.exitCode = 1;
+  });
+  await mongoHandler({ ...dbConfig, action: "restore" });
+};

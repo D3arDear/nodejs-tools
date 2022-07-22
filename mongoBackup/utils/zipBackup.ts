@@ -23,10 +23,6 @@ export async function zipBackup(input: string, output: string) {
   archive.pipe(outputStream);
   archive.directory(input, false);
   archive.finalize();
-  // const gzip = createGzip();
-  // const source = createReadStream(input);
-  // const destination = createWriteStream(output);
-  // await pipe(source, gzip, destination);
 }
 
 export async function unzipBackup(input: string, output: string) {
@@ -34,6 +30,6 @@ export async function unzipBackup(input: string, output: string) {
     await extract(input, { dir: output });
     console.log("Extraction complete");
   } catch (err) {
-    // handle any errors
+    console.error("An error occurred:", err);
   }
 }

@@ -1,3 +1,4 @@
+import { exec, ExecException } from "node:child_process";
 import { dbCMDAction, getDBCmd, TDBCmdOptions } from "./getCmd";
 
 export const mongoHandler = async (config: TDBCmdOptions) => {
@@ -8,12 +9,14 @@ export const mongoHandler = async (config: TDBCmdOptions) => {
   };
   console.log("[开始%s] %s ", actionMap[action], dbName);
   const cmdStr = getDBCmd(config);
-  exec(cmdStr, function (err: Error) {
-    if (!err) {
-      console.log("[成功%s] %s", actionMap[action], outputPath);
-    } else {
-      console.log(err);
-      console.log("[指令执行失败] %s", cmdStr);
-    }
-  });
+  cmdStr.cmd
+    ? await exec(cmdStr.cmd).on("error", function (err: ExecException) {
+        if (!err) {
+          console.log("[成功%s] %s", actionMap[action], outputPath);
+        } else {
+          console.log(err);
+          console.log("[指令执行失败] %s", cmdStr);
+        }
+      })
+    : console.log("命令参数有误", cmdStr.error);
 };
